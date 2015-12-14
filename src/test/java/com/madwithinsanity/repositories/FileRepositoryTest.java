@@ -1,10 +1,8 @@
 package com.madwithinsanity.repositories;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +18,21 @@ import junit.framework.TestCase;
 public class FileRepositoryTest {
 
 	@Autowired
-	FileRepository fileRepository;
+	FileRepositoryImpl fileRepository;
 
 	@Test
 	public void fileSaveTest() throws IOException {
 		File file = new File("src/test/resources/testFile.txt");
-		FileInputStream fileInputStream = new FileInputStream(file);
-		String id = fileRepository.storeFile(IOUtils.toByteArray(fileInputStream), "testFile.txt");
+		String id = fileRepository.save(file);
 		TestCase.assertNotNull(id);
-		
-		fileRepository.getFile(id);
+	}
+
+	@Test
+	public void testAddFindAndDelete() throws IOException {
+		File testFile = new File("src/test/resources/testFile.txt");
+		String id = fileRepository.save(testFile);
+		TestCase.assertNotNull(fileRepository.findOne(id));
+		fileRepository.delete(id);
+		TestCase.assertNull(fileRepository.findOne(id));
 	}
 }

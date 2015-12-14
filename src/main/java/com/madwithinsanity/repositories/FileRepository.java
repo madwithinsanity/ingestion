@@ -1,31 +1,38 @@
 package com.madwithinsanity.repositories;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSFile;
+public interface FileRepository {
 
-@Repository
-public class FileRepository {
+	/**
+	 * Save a file and return the file id. {@link Assert} the file is not null and exists
+	 * 
+	 * @param file
+	 *            not null and exists
+	 * @return fileName donating the file's path used as a unique key to retreive the file
+	 * @throws IOException
+	 */
+	String save(File file) throws IOException;
 
-	@Autowired
-	private GridFsTemplate template;
+	/**
+	 * Delete any file that matches passed fileName. {@link Assert} fileName is not null
+	 * 
+	 * @param fileName
+	 *            must not be null or empty
+	 */
+	void delete(String fileName);
 
-	public String storeFile(byte[] bytes, String filename) {
-		InputStream input = new ByteArrayInputStream(bytes);
-		GridFSFile response = template.store(input, filename);
-		return response.getId().toString();
-	}
+	/**
+	 * Find a single record that matches the fileLocation and return a file to it. {@link Assert} id is not null
+	 * 
+	 * @param fileLocation
+	 *            must not be null or empty
+	 * @return
+	 * @throws IOException
+	 */
+	File findOne(String fileLocation) throws IOException;
 
-	public InputStream getFile(String id) {
-		GridFSDBFile response = template.findOne(new Query(Criteria.where("Id").is(id)));
-		return response.getInputStream();
-	}
 }
