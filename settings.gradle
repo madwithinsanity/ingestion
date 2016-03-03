@@ -1,0 +1,2 @@
+rootProject.name='ingestion'
+include ':ingestion-ui','ingestion-gateway'

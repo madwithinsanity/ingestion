@@ -1,6 +1,11 @@
 .project
 .classpath
-.gradle/
 .settings/
+bower_components/
 build/
-bin/
+target/
+.gradle/
+/bin
+*.springBeans
+/build
+WEB-INF/
